@@ -56,7 +56,7 @@ public class Comparer
 
     private void CompareList(string propName, Type type, IList? expected, IList? actual)
     {
-        if(classTypes.Contains(type.Name))
+        if(type.IsClass && !type.FullName.StartsWith("System."))
         {
             if(expected != null && actual != null && expected.Count == actual.Count)
             {
