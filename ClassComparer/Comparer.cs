@@ -25,8 +25,6 @@ public class Comparer
 {
     private CompareResponse response;
 
-    private readonly List<string> classTypes = new List<string> { "MyClass", "MyOtherClass", "SomeClass" };
-
     public CompareResponse IsEqual(MyClass expected, MyClass actual)
     {
         response = new CompareResponse();
@@ -38,7 +36,7 @@ public class Comparer
 
     private void Compare<T>(string propName, Type type, T expected, T actual)
     {
-        if (classTypes.Contains(type.Name))
+        if (type.IsClass && !type.FullName.StartsWith("System."))
         {
             foreach (var prop in type.GetProperties())
             {
