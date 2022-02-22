@@ -60,11 +60,27 @@ public class Comparer
         {
             if(expected != null && actual != null && expected.Count == actual.Count)
             {
+                List<object> expectedList = new();
+                List<object> actualList = new();
+
+                foreach (var expectedItem in expected)
+                {
+                    expectedList.Add(Convert.ChangeType(expectedItem, type));
+                }
+                foreach (var actualItem in actual)
+                {
+                    actualList.Add(Convert.ChangeType(actualItem, type));
+                }
+
+                var orderByProperty = type.GetProperties().First(p => p.GetType().FullName.StartsWith("System."));
+                expectedList = expectedList.OrderBy(o => orderByProperty.GetValue(o)).ToList();
+                actualList = actualList.OrderBy(o => orderByProperty.GetValue(o)).ToList();
+
                 for (var i = 0; i < expected.Count; i++)
                 {
                     foreach (var prop in type.GetProperties())
                     {
-                        Compare(propName + "." + prop.Name, prop.PropertyType, prop.GetValue(expected[i]), prop.GetValue(actual[i]));
+                        Compare(propName + "." + prop.Name, prop.PropertyType, prop.GetValue(expectedList[i]), prop.GetValue(actualList[i]));
                     }
                 }
             }
